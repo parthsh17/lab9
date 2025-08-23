@@ -1,4 +1,3 @@
-// backend/routes/auth.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -9,7 +8,6 @@ const { sendRegistrationEmail } = require('../utils/mailer');
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-fallback-secret-key';
 
-// User Registration
 router.post('/register', upload.single('profilePicture'), async (req, res) => {
     try {
         const { name, email, phone, password } = req.body;
@@ -29,7 +27,6 @@ router.post('/register', upload.single('profilePicture'), async (req, res) => {
     }
 });
 
-// User Login
 router.post('/login', express.json(), async (req, res) => {
     try {
         const { email, password } = req.body;

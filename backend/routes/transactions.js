@@ -1,10 +1,8 @@
-// backend/routes/transactions.js
 const express = require('express');
 const pool = require('../db');
 const auth = require('../middleware/auth');
 const router = express.Router();
 
-// GET all transactions for the logged-in user
 router.get('/', auth, async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT * FROM transactions WHERE user_id = ? ORDER BY date DESC', [req.user.id]);
@@ -14,7 +12,6 @@ router.get('/', auth, async (req, res) => {
     }
 });
 
-// POST a new transaction
 router.post('/', auth, express.json(), async (req, res) => {
     try {
         const { type, amount, description, date } = req.body;
@@ -28,7 +25,6 @@ router.post('/', auth, express.json(), async (req, res) => {
     }
 });
 
-// DELETE a transaction
 router.delete('/:id', auth, async (req, res) => {
     try {
         const [result] = await pool.query('DELETE FROM transactions WHERE id = ? AND user_id = ?', [req.params.id, req.user.id]);

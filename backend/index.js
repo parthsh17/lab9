@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -20,14 +21,18 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/transactions', transactionRoutes);
 
-const rootDir = path.resolve(__dirname, '..'); 
-const frontendPath = path.join(rootDir, 'frontend', 'dist'); 
+const frontendPath = path.join(__dirname, 'dist');
 
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
 
-app.use(express.static(frontendPath));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+} else {
+  console.warn('⚠️ Frontend dist folder not found, skipping static serving.');
+}
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(frontendPath, 'index.html'));
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
-
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
